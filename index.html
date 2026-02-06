@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aslı Seni çok seviyorum ❤️</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow: hidden;
+            background: linear-gradient(135deg, #0a0015 0%, #1a0a2e 50%, #0a0015 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        
+        .question-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 107, 157, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.15) 0%, transparent 50%),
+                linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .question-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Arka plan animasyonlu kalpler */
+        .bg-hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            opacity: 0.1;
+        }
+        
+        .bg-heart {
+            position: absolute;
+            font-size: 60px;
+            animation: float-hearts 15s linear infinite;
+            opacity: 0.3;
+        }
+        
+        @keyframes float-hearts {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .question-container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 60px 80px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                inset 0 0 60px rgba(255, 107, 157, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .cute-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: bounce 1s ease-in-out infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .question-text {
+            color: #fff;
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 50px;
+            text-align: center;
+            font-family: 'Georgia', serif;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, #ff6b9d, #ffa6c9, #ff85b3, #ff6b9d);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 3s ease infinite;
+            text-shadow: 0 0 30px rgba(255, 107, 157, 0.3);
+        }
+        
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .buttons-container {
+            display: flex;
+            gap: 30px;
+            position: relative;
+            min-width: 600px;
+            min-height: 120px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .answer-btn {
+            padding: 20px 60px;
+            font-size: 28px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-family: 'Georgia', serif;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .answer-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .answer-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .yes-btn {
+            background: linear-gradient(135deg, #ff1a66, #ff6b9d);
+            color: white;
+            box-shadow: 
+                0 10px 40px rgba(255, 26, 102, 0.4),
+                0 0 20px rgba(255, 107, 157, 0.3);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        .yes-btn:hover {
+            box-shadow: 
+                0 15px 50px rgba(255, 26, 102, 0.6),
+                0 0 40px rgba(255, 107, 157, 0.5);
+            transform: translate(80px, -50%) scale(1.1) translateY(-5px);
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 
+                    0 10px 40px rgba(255, 26, 102, 0.4),
+                    0 0 20px rgba(255, 107, 157, 0.3);
+            }
+            50% {
+                box-shadow: 
+                    0 15px 50px rgba(255, 26, 102, 0.6),
+                    0 0 40px rgba(255, 107, 157, 0.6);
+            }
+        }
+        
+        .no-btn {
+            background: linear-gradient(135deg, #4a4a4a, #2d2d2d);
+            color: #999;
+            position: absolute;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            left: 50%;
+            top: 50%;
+            transform: translate(-280px, -50%);
+        }
+        
+        .no-btn:hover {
+            background: linear-gradient(135deg, #5a5a5a, #3d3d3d);
+        }
+        
+        .yes-btn {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(80px, -50%);
+        }
+        
+        /* Parıldayan yıldızlar */
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: sparkle-twinkle 2s ease-in-out infinite;
+        }
+        
+        @keyframes sparkle-twinkle {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        canvas {
+            display: block;
+            cursor: pointer;
+        }
+        
+        .info {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff6b9d;
+            font-size: 18px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(255, 107, 157, 0.5);
+            pointer-events: none;
+        }
+        
+        .love-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #fff;
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+            font-family: 'Georgia', serif;
+            letter-spacing: 3px;
+            animation: pulse 2s ease-in-out infinite, glow 3s ease-in-out infinite;
+        }
+        
+        .love-text .name {
+            color: #ff6b9d;
+            font-size: 56px;
+            display: block;
+            margin-top: 10px;
+            text-shadow: 
+                0 0 20px rgba(255, 107, 157, 1),
+                0 0 40px rgba(255, 107, 157, 0.8),
+                0 0 60px rgba(255, 107, 157, 0.6),
+                0 0 80px rgba(255, 107, 157, 0.4);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+        
+        @keyframes glow {
+            0%, 100% { 
+                text-shadow: 
+                    0 0 10px rgba(255, 255, 255, 0.8),
+                    0 0 20px rgba(255, 107, 157, 0.6),
+                    0 0 30px rgba(255, 107, 157, 0.4);
+            }
+            50% { 
+                text-shadow: 
+                    0 0 20px rgba(255, 255, 255, 1),
+                    0 0 40px rgba(255, 107, 157, 0.8),
+                    0 0 60px rgba(255, 107, 157, 0.6),
+                    0 0 80px rgba(255, 107, 157, 0.4);
+            }
+        }
+        
+        .hearts-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .floating-heart {
+            position: absolute;
+            font-size: 20px;
+            animation: float-up 8s linear infinite;
+            opacity: 0;
+        }
+        
+        @keyframes float-up {
+            0% {
+                opacity: 0;
+                transform: translateY(0) rotate(0deg);
+            }
+            10% {
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="question-screen" id="questionScreen">
+        <div class="bg-hearts" id="bgHearts"></div>
+        <div class="question-container">
+            <div class="cute-emoji">🥺💕</div>
+            <div class="question-text">Beni affettin mi?</div>
+            <div class="buttons-container">
+                <button class="answer-btn no-btn" id="noBtn">Hayır</button>
+                <button class="answer-btn yes-btn" id="yesBtn">Evet ❤️</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hearts-bg" id="heartsContainer"></div>
+    <div class="info">✨ Tıklayarak etkileşime geçebilirsin ✨</div>
+    <div class="love-text">
+        Seni Seviyorum
+        <span class="name">Aslı ❤️</span>
+    </div>
+    <canvas id="canvas"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const questionScreen = document.getElementById('questionScreen');
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const bgHearts = document.getElementById('bgHearts');
+        
+        let animationStarted = false;
+        
+        // Arka plan kalpleri oluştur
+        function createBgHearts() {
+            for (let i = 0; i < 8; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'bg-heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDelay = Math.random() * 15 + 's';
+                heart.style.fontSize = (Math.random() * 40 + 40) + 'px';
+                bgHearts.appendChild(heart);
+            }
+        }
+        
+        // Parıldayan yıldızlar ekle
+        function createSparkles() {
+            const container = document.querySelector('.question-container');
+            for (let i = 0; i < 20; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.top = Math.random() * 100 + '%';
+                sparkle.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(sparkle);
+            }
+        }
+        
+        createBgHearts();
+        createSparkles();
+        
+        // Evet butonuna tıklanınca animasyon başlasın
+        yesBtn.addEventListener('click', () => {
+            questionScreen.classList.add('hidden');
+            setTimeout(() => {
+                questionScreen.style.display = 'none';
+                if (!animationStarted) {
+                    animationStarted = true;
+                    initParticles();
+                    animate();
+                    createFloatingHearts();
+                }
+            }, 500);
+        });
+        
+        // Hayır butonu sadece sallanıyor, hiçbir şey yapmıyor
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Tıklanamaz!
+        });
+        
+        // Hayır butonundan kaç - fare ÇOK yaklaşınca
+        let noBtnRunning = false;
+        document.addEventListener('mousemove', (e) => {
+            if (questionScreen.classList.contains('hidden')) return;
+            
+            const rect = noBtn.getBoundingClientRect();
+            const btnCenterX = rect.left + rect.width / 2;
+            const btnCenterY = rect.top + rect.height / 2;
+            
+            const distance = Math.sqrt(
+                Math.pow(e.clientX - btnCenterX, 2) + 
+                Math.pow(e.clientY - btnCenterY, 2)
+            );
+            
+            // Fare sadece 80px yakınına gelince kaç! (Daha zor)
+            if (distance < 80 && !noBtnRunning) {
+                noBtnRunning = true;
+                
+                // Buton boyutlarını al
+                const btnWidth = 250; // Sabit boyut kullan
+                const btnHeight = 80;
+                
+                // ÇOK GÜVENLI SINIRLAR - buton kesinlikle ekranda kalsın
+                const minX = 100;
+                const maxX = window.innerWidth - btnWidth - 100;
+                const minY = 150;
+                const maxY = window.innerHeight - btnHeight - 150;
+                
+                // Rastgele yeni pozisyon
+                let newX, newY;
+                let attempts = 0;
+                
+                do {
+                    newX = Math.random() * (maxX - minX) + minX;
+                    newY = Math.random() * (maxY - minY) + minY;
+                    
+                    // Merkez noktasını hesapla
+                    const newCenterX = newX + btnWidth / 2;
+                    const newCenterY = newY + btnHeight / 2;
+                    
+                    const distanceFromMouse = Math.sqrt(
+                        Math.pow(e.clientX - newCenterX, 2) + 
+                        Math.pow(e.clientY - newCenterY, 2)
+                    );
+                    
+                    // Yeni pozisyon fareden en az 250px uzakta olsun
+                    if (distanceFromMouse > 250 || attempts > 15) {
+                        break;
+                    }
+                    attempts++;
+                } while (true);
+                
+                // EKSTRA KONTROL - kesinlikle sınırlar içinde kal
+                if (newX < minX) newX = minX;
+                if (newX > maxX) newX = maxX;
+                if (newY < minY) newY = minY;
+                if (newY > maxY) newY = maxY;
+                
+                noBtn.style.left = newX + 'px';
+                noBtn.style.top = newY + 'px';
+                noBtn.style.transform = 'translate(0, 0)';
+                
+                setTimeout(() => {
+                    noBtnRunning = false;
+                }, 200);
+            }
+        });
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        });
+        
+        class Particle {
+            constructor(x, y) {
+                this.targetX = x;
+                this.targetY = y;
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.color = this.getColor();
+                this.pulsePhase = Math.random() * Math.PI * 2;
+                this.pulseSpeed = Math.random() * 0.02 + 0.01;
+            }
+            
+            getColor() {
+                const colors = [
+                    'rgba(255, 107, 157, ',
+                    'rgba(255, 77, 136, ',
+                    'rgba(255, 51, 119, ',
+                    'rgba(255, 26, 102, ',
+                    'rgba(255, 179, 210, '
+                ];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            update() {
+                // Hedef noktaya doğru git - ÇOK DAHA YAVAŞ
+                const dx = this.targetX - this.x;
+                const dy = this.targetY - this.y;
+                
+                this.x += dx * 0.015 + this.speedX; // 0.05'ten 0.015'e düşürdüm
+                this.y += dy * 0.015 + this.speedY;
+                
+                // Daha yavaş dalgalanma
+                this.speedX += (Math.random() - 0.5) * 0.05;
+                this.speedY += (Math.random() - 0.5) * 0.05;
+                
+                // Hızı daha yumuşak sınırla
+                this.speedX *= 0.98;
+                this.speedY *= 0.98;
+                
+                // Pulse animasyonu - daha yavaş
+                this.pulsePhase += this.pulseSpeed * 0.5;
+            }
+            
+            draw() {
+                const distance = Math.sqrt(
+                    Math.pow(this.targetX - this.x, 2) + 
+                    Math.pow(this.targetY - this.y, 2)
+                );
+                const opacity = Math.max(0.4, 1 - distance / 200);
+                const pulse = Math.sin(this.pulsePhase) * 0.2 + 0.8;
+                const currentSize = this.size * pulse;
+                
+                // Ana parçacık
+                ctx.fillStyle = this.color + opacity + ')';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, currentSize, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Basit parlama
+                ctx.fillStyle = this.color + (opacity * 0.3) + ')';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, currentSize * 2.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 100 };
+        
+        // Uçan kalpler oluştur
+        function createFloatingHearts() {
+            const heartsContainer = document.getElementById('heartsContainer');
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'floating-heart';
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                heart.style.animationDuration = (Math.random() * 4 + 6) + 's';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                heartsContainer.appendChild(heart);
+                
+                setTimeout(() => {
+                    heart.remove();
+                }, 10000);
+            }, 1500); // Daha seyrek oluştur
+        }
+        
+        canvas.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+        
+        canvas.addEventListener('click', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+            createExplosion(e.x, e.y);
+        });
+        
+        canvas.addEventListener('mouseleave', () => {
+            mouse.x = null;
+            mouse.y = null;
+        });
+        
+        function createExplosion(x, y) {
+            particles.forEach(p => {
+                const dx = p.x - x;
+                const dy = p.y - y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 150) {
+                    const force = (150 - distance) / 150;
+                    p.speedX += (dx / distance) * force * 5; // 10'dan 5'e düşürdüm
+                    p.speedY += (dy / distance) * force * 5;
+                }
+            });
+        }
+        
+        function createHeart(centerX, centerY, size) {
+            const points = [];
+            const numPoints = 800; // 800 nokta - performans ve güzellik dengesi
+            
+            for (let i = 0; i < numPoints; i++) {
+                const t = (i / numPoints) * Math.PI * 2;
+                
+                // Kalp denklemi
+                const x = size * 16 * Math.pow(Math.sin(t), 3);
+                const y = -size * (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+                
+                points.push({
+                    x: centerX + x,
+                    y: centerY + y
+                });
+            }
+            
+            return points;
+        }
+        
+        function initParticles() {
+            particles = [];
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const heartSize = Math.min(canvas.width, canvas.height) / 40;
+            
+            const heartPoints = createHeart(centerX, centerY, heartSize);
+            
+            heartPoints.forEach(point => {
+                particles.push(new Particle(point.x, point.y));
+            });
+        }
+        
+        function connectParticles() {
+            const maxDistance = 65;
+            const step = 3; // Her 3 parçacıktan birini kontrol et - çok daha hızlı
+            
+            for (let i = 0; i < particles.length; i += step) {
+                for (let j = i + step; j < particles.length && j < i + 50; j += step) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < maxDistance) {
+                        const opacity = (1 - distance / maxDistance) * 0.35;
+                        
+                        ctx.strokeStyle = `rgba(255, 107, 157, ${opacity})`;
+                        ctx.lineWidth = 0.6;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+        
+        function animate() {
+            ctx.fillStyle = 'rgba(10, 0, 21, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Mouse etkileşimi
+            particles.forEach(particle => {
+                if (mouse.x && mouse.y) {
+                    const dx = particle.x - mouse.x;
+                    const dy = particle.y - mouse.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < mouse.radius) {
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        particle.speedX += (dx / distance) * force * 0.2; // 0.5'ten 0.2'ye düşürdüm
+                        particle.speedY += (dy / distance) * force * 0.2;
+                    }
+                }
+                
+                particle.update();
+            });
+            
+            connectParticles();
+            
+            particles.forEach(particle => {
+                particle.draw();
+            });
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Animasyonlar sadece Yes butonuna basıldığında başlayacak
+    </script>
+</body>
+</html>
