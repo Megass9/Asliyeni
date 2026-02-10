@@ -338,155 +338,45 @@
                 transform: translateY(-100vh) rotate(360deg);
             }
         }
+        
+        .distance-note {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 18px;
+            text-align: center;
+            font-family: 'Georgia', serif;
+            font-style: italic;
+            text-shadow: 0 0 10px rgba(255, 107, 157, 0.5);
+            pointer-events: none;
+            z-index: 10;
+            width: 90%;
+            max-width: 700px;
+            line-height: 1.6;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px 25px;
+            border-radius: 20px;
+            backdrop-filter: blur(3px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 3s ease-in-out 1s backwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
     </style>
 </head>
 <body>
-    <div class="question-screen" id="questionScreen">
-        <div class="bg-hearts" id="bgHearts"></div>
-        <div class="question-container">
-            <div class="cute-emoji">🥺💕</div>
-            <div class="question-text">Beni affettin mi?</div>
-            <div class="buttons-container">
-                <button class="answer-btn no-btn" id="noBtn">Hayır</button>
-                <button class="answer-btn yes-btn" id="yesBtn">Evet ❤️</button>
-            </div>
-        </div>
-    </div>
-    
     <div class="hearts-bg" id="heartsContainer"></div>
-    <div class="info">✨ Tıklayarak etkileşime geçebilirsin ✨</div>
-    <div class="love-text">
-        Seni Seviyorum
-        <span class="name">Aslı ❤️</span>
-    </div>
     <canvas id="canvas"></canvas>
     
     <script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
-        const questionScreen = document.getElementById('questionScreen');
-        const yesBtn = document.getElementById('yesBtn');
-        const noBtn = document.getElementById('noBtn');
-        const bgHearts = document.getElementById('bgHearts');
         
-        let animationStarted = false;
-        
-        // Arka plan kalpleri oluştur
-        function createBgHearts() {
-            for (let i = 0; i < 8; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'bg-heart';
-                heart.innerHTML = '❤️';
-                heart.style.left = Math.random() * 100 + '%';
-                heart.style.animationDelay = Math.random() * 15 + 's';
-                heart.style.fontSize = (Math.random() * 40 + 40) + 'px';
-                bgHearts.appendChild(heart);
-            }
-        }
-        
-        // Parıldayan yıldızlar ekle
-        function createSparkles() {
-            const container = document.querySelector('.question-container');
-            for (let i = 0; i < 20; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
-                sparkle.style.left = Math.random() * 100 + '%';
-                sparkle.style.top = Math.random() * 100 + '%';
-                sparkle.style.animationDelay = Math.random() * 2 + 's';
-                container.appendChild(sparkle);
-            }
-        }
-        
-        createBgHearts();
-        createSparkles();
-        
-        // Evet butonuna tıklanınca animasyon başlasın
-        yesBtn.addEventListener('click', () => {
-            questionScreen.classList.add('hidden');
-            setTimeout(() => {
-                questionScreen.style.display = 'none';
-                if (!animationStarted) {
-                    animationStarted = true;
-                    initParticles();
-                    animate();
-                    createFloatingHearts();
-                }
-            }, 500);
-        });
-        
-        // Hayır butonu sadece sallanıyor, hiçbir şey yapmıyor
-        noBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            // Tıklanamaz!
-        });
-        
-        // Hayır butonundan kaç - fare ÇOK yaklaşınca
-        let noBtnRunning = false;
-        document.addEventListener('mousemove', (e) => {
-            if (questionScreen.classList.contains('hidden')) return;
-            
-            const rect = noBtn.getBoundingClientRect();
-            const btnCenterX = rect.left + rect.width / 2;
-            const btnCenterY = rect.top + rect.height / 2;
-            
-            const distance = Math.sqrt(
-                Math.pow(e.clientX - btnCenterX, 2) + 
-                Math.pow(e.clientY - btnCenterY, 2)
-            );
-            
-            // Fare sadece 80px yakınına gelince kaç! (Daha zor)
-            if (distance < 80 && !noBtnRunning) {
-                noBtnRunning = true;
-                
-                // Buton boyutlarını al
-                const btnWidth = 250; // Sabit boyut kullan
-                const btnHeight = 80;
-                
-                // ÇOK GÜVENLI SINIRLAR - buton kesinlikle ekranda kalsın
-                const minX = 100;
-                const maxX = window.innerWidth - btnWidth - 100;
-                const minY = 150;
-                const maxY = window.innerHeight - btnHeight - 150;
-                
-                // Rastgele yeni pozisyon
-                let newX, newY;
-                let attempts = 0;
-                
-                do {
-                    newX = Math.random() * (maxX - minX) + minX;
-                    newY = Math.random() * (maxY - minY) + minY;
-                    
-                    // Merkez noktasını hesapla
-                    const newCenterX = newX + btnWidth / 2;
-                    const newCenterY = newY + btnHeight / 2;
-                    
-                    const distanceFromMouse = Math.sqrt(
-                        Math.pow(e.clientX - newCenterX, 2) + 
-                        Math.pow(e.clientY - newCenterY, 2)
-                    );
-                    
-                    // Yeni pozisyon fareden en az 250px uzakta olsun
-                    if (distanceFromMouse > 250 || attempts > 15) {
-                        break;
-                    }
-                    attempts++;
-                } while (true);
-                
-                // EKSTRA KONTROL - kesinlikle sınırlar içinde kal
-                if (newX < minX) newX = minX;
-                if (newX > maxX) newX = maxX;
-                if (newY < minY) newY = minY;
-                if (newY > maxY) newY = maxY;
-                
-                noBtn.style.left = newX + 'px';
-                noBtn.style.top = newY + 'px';
-                noBtn.style.transform = 'translate(0, 0)';
-                
-                setTimeout(() => {
-                    noBtnRunning = false;
-                }, 200);
-            }
-        });
         
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -508,18 +398,16 @@
                 this.speedY = (Math.random() - 0.5) * 0.5;
                 this.color = this.getColor();
                 this.pulsePhase = Math.random() * Math.PI * 2;
-                this.pulseSpeed = Math.random() * 0.02 + 0.01;
+                
+                // 3D Derinlik efekti için Z ekseni
+                this.z = Math.random() * 20; 
+                this.originalSize = Math.random() * 2 + 1;
             }
             
             getColor() {
-                const colors = [
-                    'rgba(255, 107, 157, ',
-                    'rgba(255, 77, 136, ',
-                    'rgba(255, 51, 119, ',
-                    'rgba(255, 26, 102, ',
-                    'rgba(255, 179, 210, '
-                ];
-                return colors[Math.floor(Math.random() * colors.length)];
+                // HSL kullanarak daha canlı renkler
+                const hue = Math.random() * 40 + 320; // Pembe-Mor arası
+                return `hsla(${hue}, 80%, 60%,`;
             }
             
             update() {
@@ -543,6 +431,18 @@
             }
             
             draw() {
+                // Rastgele pırıltı efekti (Yıldız gibi parlasın)
+                if (Math.random() < 0.003) {
+                    ctx.fillStyle = '#fff';
+                    ctx.shadowBlur = 20;
+                    ctx.shadowColor = '#fff';
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    return; // Normal çizimi atla
+                }
+
                 const distance = Math.sqrt(
                     Math.pow(this.targetX - this.x, 2) + 
                     Math.pow(this.targetY - this.y, 2)
@@ -566,12 +466,149 @@
         }
         
         let particles = [];
+        let ripples = [];
+        let trailParticles = [];
+        let shootingStars = [];
+        let satellites = [];
         let mouse = { x: null, y: null, radius: 100 };
+        let baseHeartSize;
         
+        // Şok dalgası sınıfı
+        class Ripple {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 10;
+                this.maxRadius = 300;
+                this.speed = 4;
+                this.opacity = 0.8;
+                this.color = `rgba(255, 107, 157, ${this.opacity})`;
+            }
+            
+            update() {
+                this.radius += this.speed;
+                this.opacity -= 0.015;
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(255, 107, 157, ${Math.max(0, this.opacity)})`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+        
+        // Mouse izi parçacığı (Yıldız Tozu)
+        class TrailParticle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.life = 1;
+                this.color = `hsl(${Math.random() * 60 + 300}, 100%, 75%)`;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.life -= 0.02;
+                this.size *= 0.95;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.life;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        // Kayan Yıldız Sınıfı
+        class ShootingStar {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height * 0.5; // Sadece üst yarıda başla
+                this.len = Math.random() * 80 + 10;
+                this.speed = Math.random() * 10 + 6;
+                this.size = Math.random() * 1 + 0.1;
+                this.waitTime = new Date().getTime() + Math.random() * 3000 + 500;
+                this.active = false;
+            }
+            update() {
+                if (this.active) {
+                    this.x -= this.speed;
+                    this.y += this.speed;
+                    if (this.x < 0 || this.y >= canvas.height) {
+                        this.active = false;
+                        this.waitTime = new Date().getTime() + Math.random() * 3000 + 500;
+                    }
+                } else {
+                    if (this.waitTime < new Date().getTime()) {
+                        this.active = true;
+                        this.x = Math.random() * canvas.width + 200; // Sağdan başlasın
+                        this.y = -50;
+                    }
+                }
+            }
+            draw() {
+                if (this.active) {
+                    ctx.strokeStyle = "rgba(255, 255, 255, " + Math.random() + ")";
+                    ctx.lineWidth = this.size;
+                    ctx.beginPath();
+                    ctx.moveTo(this.x, this.y);
+                    ctx.lineTo(this.x + this.len, this.y - this.len);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Uydu (Satellite) Sınıfı - Kalbin etrafında dönen kozmik ışıklar
+        class Satellite {
+            constructor() {
+                this.angle = Math.random() * Math.PI * 2;
+                this.radiusX = Math.random() * 100 + 300;
+                this.radiusY = Math.random() * 50 + 200;
+                this.speed = (Math.random() * 0.01 + 0.005) * (Math.random() < 0.5 ? 1 : -1);
+                this.size = Math.random() * 2 + 2;
+                this.color = `hsl(${Math.random() * 60 + 300}, 100%, 70%)`;
+            }
+            
+            update() {
+                this.angle += this.speed;
+            }
+            
+            draw(centerX, centerY) {
+                const x = centerX + Math.cos(this.angle) * this.radiusX;
+                const y = centerY + Math.sin(this.angle) * this.radiusY;
+                
+                // Parlama efekti
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = this.color;
+                ctx.fillStyle = '#fff';
+                
+                ctx.beginPath();
+                ctx.arc(x, y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.shadowBlur = 0;
+                
+                // İnce yörünge çizgisi (isteğe bağlı, çok kalabalık olmasın diye kapalı tutulabilir veya çok silik yapılabilir)
+                // ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+                // ctx.stroke();
+            }
+        }
+
         // Uçan kalpler oluştur
         function createFloatingHearts() {
             const heartsContainer = document.getElementById('heartsContainer');
             setInterval(() => {
+                if (document.hidden) return; // Sekme aktif değilse oluşturma
                 const heart = document.createElement('div');
                 heart.className = 'floating-heart';
                 heart.innerHTML = '❤️';
@@ -590,6 +627,9 @@
         canvas.addEventListener('mousemove', (e) => {
             mouse.x = e.x;
             mouse.y = e.y;
+            for(let i=0; i<3; i++) {
+                trailParticles.push(new TrailParticle(e.x, e.y));
+            }
         });
         
         canvas.addEventListener('click', (e) => {
@@ -619,7 +659,7 @@
         
         function createHeart(centerX, centerY, size) {
             const points = [];
-            const numPoints = 800; // 800 nokta - performans ve güzellik dengesi
+            const numPoints = 1200; // Daha yoğun ve detaylı kalp
             
             for (let i = 0; i < numPoints; i++) {
                 const t = (i / numPoints) * Math.PI * 2;
@@ -641,17 +681,39 @@
             particles = [];
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
-            const heartSize = Math.min(canvas.width, canvas.height) / 40;
+            baseHeartSize = Math.min(canvas.width, canvas.height) / 40;
             
-            const heartPoints = createHeart(centerX, centerY, heartSize);
+            const heartPoints = createHeart(centerX, centerY, baseHeartSize);
             
             heartPoints.forEach(point => {
                 particles.push(new Particle(point.x, point.y));
             });
+            
+            for(let i=0; i<5; i++) {
+                shootingStars.push(new ShootingStar());
+            }
+            
+            satellites = [];
+            for(let i=0; i<6; i++) { // 6 adet uydu
+                satellites.push(new Satellite());
+            }
+        }
+        
+        function updateHeartTargets(size) {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const heartPoints = createHeart(centerX, centerY, size);
+            
+            if (heartPoints.length !== particles.length) return;
+            
+            for(let i = 0; i < particles.length; i++) {
+                particles[i].targetX = heartPoints[i].x;
+                particles[i].targetY = heartPoints[i].y;
+            }
         }
         
         function connectParticles() {
-            const maxDistance = 65;
+            const maxDistance = 50;
             const step = 3; // Her 3 parçacıktan birini kontrol et - çok daha hızlı
             
             for (let i = 0; i < particles.length; i += step) {
@@ -661,7 +723,7 @@
                     const distance = Math.sqrt(dx * dx + dy * dy);
                     
                     if (distance < maxDistance) {
-                        const opacity = (1 - distance / maxDistance) * 0.35;
+                        const opacity = (1 - distance / maxDistance) * 0.2;
                         
                         ctx.strokeStyle = `rgba(255, 107, 157, ${opacity})`;
                         ctx.lineWidth = 0.6;
@@ -677,6 +739,61 @@
         function animate() {
             ctx.fillStyle = 'rgba(10, 0, 21, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Gelişmiş Kalp Atışı Matematiği (Güm-Güm efekti)
+            const time = Date.now() / 1000;
+            // Sinüs dalgasının kuvvetini alarak daha keskin bir vuruş elde ediyoruz
+            const beat = Math.pow(Math.sin(time * 3), 63) * 0.15 + Math.pow(Math.sin(time * 3 + 0.3), 20) * 0.05;
+            
+            const currentHeartSize = baseHeartSize * (1 + beat);
+            
+            // Kalp en büyük halindeyken şok dalgası oluştur
+            if (beat > 0.18 && ripples.length < 3 && Math.random() > 0.8) {
+                ripples.push(new Ripple(canvas.width/2, canvas.height/2));
+            }
+            
+            // Şok dalgalarını çiz ve güncelle
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                ripples[i].update();
+                ripples[i].draw();
+                if (ripples[i].opacity <= 0) {
+                    ripples.splice(i, 1);
+                }
+            }
+            
+            // Mouse izlerini çiz
+            for (let i = trailParticles.length - 1; i >= 0; i--) {
+                trailParticles[i].update();
+                trailParticles[i].draw();
+                if (trailParticles[i].life <= 0) {
+                    trailParticles.splice(i, 1);
+                }
+            }
+
+            // Kayan yıldızları çiz
+            shootingStars.forEach(star => {
+                star.update();
+                star.draw();
+            });
+
+            // Uyduları çiz
+            satellites.forEach(sat => {
+                sat.update();
+                sat.draw(canvas.width/2, canvas.height/2);
+            });
+
+            // Ortadaki Gizli İsim (Kalp atışıyla belirir)
+            ctx.save();
+            ctx.font = "bold " + (baseHeartSize * 0.8) + "px 'Brush Script MT', cursive"; // Daha romantik font
+            ctx.fillStyle = `rgba(255, 255, 255, ${Math.max(0, (beat - 0.05) * 5)})`;
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.shadowColor = "rgba(255, 107, 157, 1)";
+            ctx.shadowBlur = 30;
+            ctx.fillText("Aslı", canvas.width/2, canvas.height/2);
+            ctx.restore();
+
+            updateHeartTargets(currentHeartSize);
             
             // Mouse etkileşimi
             particles.forEach(particle => {
@@ -704,7 +821,9 @@
             requestAnimationFrame(animate);
         }
         
-        // Animasyonlar sadece Yes butonuna basıldığında başlayacak
+        initParticles();
+        animate();
+        createFloatingHearts();
     </script>
 </body>
 </html>
