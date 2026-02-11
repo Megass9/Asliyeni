@@ -13,12 +13,20 @@
         
         body {
             overflow: hidden;
-            background: linear-gradient(135deg, #0a0015 0%, #1a0a2e 50%, #0a0015 100%);
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e, #1a0a2e);
+            background-size: 400% 400%;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             font-family: Arial, sans-serif;
+            animation: animateBg 25s ease infinite;
+        }
+
+        @keyframes animateBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         .question-screen {
@@ -372,6 +380,10 @@
 <body>
     <div class="hearts-bg" id="heartsContainer"></div>
     <canvas id="canvas"></canvas>
+
+    <div class="distance-note">
+        Sende kusur arayanın gözleri, güzelliğinin ışığında görmeyi unutur; çünkü sen kusursuzluğun en güzel hali olmakla birlikte, kusur aramayı unutturacak kadar güzelsin.
+    </div>
     
     <script>
         const canvas = document.getElementById('canvas');
